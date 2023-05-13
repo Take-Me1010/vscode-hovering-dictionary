@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import * as utils from "../../utils";
+import * as utils from "../utils";
 
 import base from "./base";
 import phrase from "./phrase";
