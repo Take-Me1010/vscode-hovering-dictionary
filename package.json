@@ -16,8 +16,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "hovering-dictionary.initialize",
-				"title": "hovering-dictionary: initialize"
+				"command": "hovering-dictionary.load-default-dictionary",
+				"title": "hovering-dictionary: load default dictionary"
 			}
 		]
 	},
