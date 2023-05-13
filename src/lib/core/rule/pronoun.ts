@@ -7,7 +7,7 @@
 /**
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
  */
-export default (pronounRule, words) => {
+export default (pronounRule: Map<string, string>[], words: string[]) => {
   let result = [];
   let changed = false;
   for (let i = 0; i < pronounRule.length; i++) {
@@ -26,7 +26,7 @@ export default (pronounRule, words) => {
   return result;
 };
 
-const doConvert = (word, pronouns) => {
+const doConvert = (word: string, pronouns: Map<string, string>) => {
   let result = null;
   const w = pronouns.get(word);
   if (w) {
