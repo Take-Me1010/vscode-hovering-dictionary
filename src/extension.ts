@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import { DictionaryHoverProvider } from './hoverprovider';
 import { Lookuper } from './lookuper';
 import { registerDefaultDict, registerDictFromFile } from './register';
-import { DictionaryFileEncoding, DictionaryFileFormat } from './dictparser/interface';
+import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './register/types';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -46,19 +46,19 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!uris) { return; }
 			file = uris[0].fsPath;
 
-			vscode.window.showQuickPick(["EIJIRO", "TSV", "PDIC_LINE", "JSON"], {
+			vscode.window.showQuickPick(DICT_FILE_FORMAT, {
 				title: 'Select the format of the selected file.', canPickMany: false
 			}).then((pick) => {
 				if (!pick) { return; }
 				format = pick as DictionaryFileFormat;
 
-				vscode.window.showQuickPick(["Shift-JIS", "UTF-8", "UTF-16"], {
+				vscode.window.showQuickPick(DICT_FILE_ENCODINGS, {
 					title: 'Select the encoding of the selected file.', canPickMany: false
 				}).then((pick) => {
 					if (!pick) { return; }
 					encoding = pick as DictionaryFileEncoding;
 					
-					registerDictFromFile(file, format, encoding)
+					registerDictFromFile(context, 'test', {file, format, encoding})
 						.then((num) => {
 							vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
 						});
