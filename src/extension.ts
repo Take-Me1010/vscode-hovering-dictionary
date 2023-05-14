@@ -38,19 +38,19 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-dictionary', async () => {
-		const uris = await window.showOpenDialog({
+		const uris = await vscode.window.showOpenDialog({
 			canSelectMany: false,
 			title: 'select a dictionary file'
 		});
 		if (!uris) { return; }
 		const file = uris[0].fsPath;
 
-		const format = await window.showQuickPick(DICT_FILE_FORMAT, {
+		const format = await vscode.window.showQuickPick(DICT_FILE_FORMAT, {
 			title: "Select the format of the selected file", canPickMany: false
 		}) as DictionaryFileFormat | undefined;
 		if (!format) { return; }
 
-		const encoding = await window.showQuickPick(DICT_FILE_ENCODINGS, {
+		const encoding = await vscode.window.showQuickPick(DICT_FILE_ENCODINGS, {
 			title: 'Select the encoding of the selected file.', canPickMany: false
 		}) as DictionaryFileEncoding | undefined;
 		if (!encoding) { return; }
