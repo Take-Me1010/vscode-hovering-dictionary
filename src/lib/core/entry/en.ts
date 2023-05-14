@@ -19,12 +19,13 @@ const createLookupWordsEn = (rawSourceStr: string, withCapitalized = false, must
 
   const { firstWords, linkedWords } = processSourceString(sourceStr);
 
+  const firstWord = firstWords?.[0];
+  
   const lookupWords = new UniqList<string>(
     (s) => (s.length >= 2 || s === firstWord)
   );
   lookupWords.merge(linkedWords);
 
-  const firstWord = firstWords?.[0];
   if (firstWord) {
     lookupWords.merge(processFirstWord(firstWord));
   }
