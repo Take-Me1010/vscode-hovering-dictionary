@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { Lookuper } from './lookuper';
+import { LookupResult, Lookuper } from './lookuper';
 import { UniqList } from './lib/uniqlist';
 
 function getWordsFromSelections(document: vscode.TextDocument) {
@@ -21,16 +21,48 @@ function getWordsFromPosition(document: vscode.TextDocument, position: vscode.Po
     return [document.getText(range)];
 }
 
-export class DictionaryHoverProvider implements vscode.HoverProvider {
-    constructor(private lookuper: Lookuper) {
+class MarkdownFactory {
+    private replaceRules;
+    constructor() {
+        this.replaceRules = [
+            {
+                search: "(■.+|◆.+)",
+                replace: /* html */ `<span style="color:#080;">$1</span>`,
+            },
+            {
+                search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
+                replace: /* html */ `<span style="color:#080;">$1</span>`,
+            },
+            {
+                search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
+                replace: /* html */ `<span style="color:#080;">$1</span>`,
+            },
+            {
+                search: "\\n|\\\\n",
+                replace: /* html */ `<br/>`,
+            },
+        ];
     }
-
-    private createDictionaryMarkdown(head: string, description: string) {
-        const md = `
-# ${head}
+    public produce(entry: LookupResult) {
+        let { head, description } = entry;
+        for (const rule of this.replaceRules) {
+            description = description.replaceAll(new RegExp(rule.search, 'g'), rule.replace);
+        }
+        const content = `
+# [${head}](https://eow.alc.co.jp/search?q=${head})
 ${description}
-`;
-        return new vscode.MarkdownString(md);
+        `;
+        const md = new vscode.MarkdownString(content);
+        md.supportHtml = true;
+        md.isTrusted = true;
+        return md;
+    }
+}
+
+export class DictionaryHoverProvider implements vscode.HoverProvider {
+    private mdFactory;
+    constructor(private lookuper: Lookuper) {
+        this.mdFactory = new MarkdownFactory();
     }
 
     async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Hover | null | undefined> {
@@ -43,17 +75,18 @@ ${description}
             return undefined;
         }
         target.merge(words);
-        
+
         const selections = getWordsFromSelections(document);
         if (selections) {
-            for (let i = selections.length - 1; i > 0 ; i--) {
+            for (let i = selections.length - 1; i > 0; i--) {
                 target.unshift(selections[i]);
             }
         }
         const result = await this.lookuper.lookupAll(target.toArray());
         const hoveringContent = result.map((result) => {
-            return this.createDictionaryMarkdown(result.head, result.description);
+            return this.mdFactory.produce(result);
         });
+        // TODO: pay attention to https://github.com/microsoft/vscode/issues/14165
         return new vscode.Hover(hoveringContent);
     }
 }
