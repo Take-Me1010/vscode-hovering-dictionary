@@ -11,13 +11,19 @@ import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT
 
 export function activate(context: vscode.ExtensionContext) {
 	const STORAGE_PATH = context.globalStorageUri.fsPath;
-	const lookuper = new Lookuper(context);
+	/**
+	 * TODO: get from user settings.
+	 */
+	const dictionaryIdentifiers = ['default'];
+
+	const lookuper = new Lookuper(context, dictionaryIdentifiers);
+	const dictionaryHoverProvider = new DictionaryHoverProvider(lookuper);
 
 	if (!fs.existsSync(path.resolve(STORAGE_PATH, 'default.json'))) {
 		if (!fs.existsSync(STORAGE_PATH)) {
 			fs.mkdirSync(STORAGE_PATH);
 		}
-		vscode.window.showWarningMessage('No default dictionary data found. Download and read it?', 'Yes', 'No')
+		vscode.window.showWarningMessage('No default dictionary data found. Download and load it?', 'Yes', 'No')
 			.then((ans) => {
 				switch (ans) {
 					case 'Yes':
@@ -92,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.languages.registerHoverProvider(
 			'*',
-			new DictionaryHoverProvider(lookuper)
+			dictionaryHoverProvider
 		)
 	);
 }
