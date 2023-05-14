@@ -37,7 +37,7 @@ export class UniqList<T> {
       return this.array.length;
     }
   
-    push(newItem: T, key = null) {
+    push(newItem: T, key: any = null) {
       if (this.filter !== null && !this.filter(newItem, key)) {
         return;
       }
@@ -48,8 +48,20 @@ export class UniqList<T> {
       this.array.push(newItem);
       this.keys.add(actualKey);
     }
+
+    unshift(newItem: T, key: any = null) {
+      if (this.filter !== null && !this.filter(newItem, key)) {
+        return;
+      }
+      const actualKey = key || newItem;
+      if (this.keys.has(actualKey)) {
+        return;
+      }
+      this.array.unshift(newItem);
+      this.keys.add(actualKey);
+    }
   
-    merge(anotherArray: T[], keys = []) {
+    merge(anotherArray: T[], keys: any[] = []) {
       for (let i = 0; i < anotherArray.length; i++) {
         this.push(anotherArray[i], keys[i]);
       }
