@@ -8,7 +8,6 @@ import { DictionaryHoverProvider } from './hoverprovider';
 import { Lookuper } from './lookuper';
 import { registerDefaultDict, registerDictFromFile } from './register';
 import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './register/types';
-import * as window from './window';
 
 export function activate(context: vscode.ExtensionContext) {
 	const STORAGE_PATH = context.globalStorageUri.fsPath;
@@ -72,8 +71,22 @@ export function activate(context: vscode.ExtensionContext) {
 		}) as DictionaryFileEncoding | undefined;
 		if (!encoding) { return; }
 
-		const num = await registerDictFromFile(context, 'test', { file, format, encoding })
-		vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
+		const identifier = await vscode.window.showInputBox({
+			title: 'input an identifier',
+			value: `${format}_${encoding}`
+		});
+		if (!identifier) { return; }
+
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: 'registering the given dictionary file...'
+		}, async (progress, token) => {
+			const num = await registerDictFromFile(context, identifier, { file, format, encoding });
+			progress.report({increment: 50, message: 'loading registered data...'});
+			await lookuper.loadDictionary(identifier);
+			progress.report({increment: 50});
+			vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
+		});
 	}));
 
 	context.subscriptions.push(

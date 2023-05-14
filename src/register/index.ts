@@ -63,4 +63,5 @@ export async function registerDictFromFile(context: vscode.ExtensionContext, ide
         path.resolve(context.globalStorageUri.fsPath, `${identifier}.json`),
         dictData
     );
+    return wordCount;
 }

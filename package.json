@@ -18,6 +18,10 @@
 			{
 				"command": "hovering-dictionary.load-default-dictionary",
 				"title": "hovering-dictionary: load default dictionary"
+			},
+			{
+				"command": "hovering-dictionary.load-dictionary",
+				"title": "hovering-dictionary: load your dictionary file"
 			}
 		]
 	},
