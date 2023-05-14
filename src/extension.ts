@@ -32,9 +32,26 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {
-		const num = await registerDefaultDict(context);
-		await lookuper.loadDictionary('default');
-		vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: "Loading default dictionary data...",
+			cancellable: true
+		}, async (progress, token) => {
+			progress.report({
+				increment: 0
+			});
+			const num = await registerDefaultDict(context);
+
+			progress.report({
+				message: "loading data for looking up...",
+				increment: 50
+			});
+			await lookuper.loadDictionary('default');
+			vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
+			progress.report({
+				increment: 50
+			});
+		});
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-dictionary', async () => {
