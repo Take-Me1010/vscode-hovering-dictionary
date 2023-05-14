@@ -48,8 +48,10 @@ class MarkdownFactory {
         for (const rule of this.replaceRules) {
             description = description.replaceAll(new RegExp(rule.search, 'g'), rule.replace);
         }
+        const query = head.trim().replaceAll(' ', '+');
+        
         const content = `
-# [${head}](https://eow.alc.co.jp/search?q=${head})
+# [${head}](https://eow.alc.co.jp/search?q=${query})
 ${description}
         `;
         const md = new vscode.MarkdownString(content);
@@ -69,20 +71,17 @@ export class DictionaryHoverProvider implements vscode.HoverProvider {
         if (token.isCancellationRequested) {
             return undefined;
         }
-        const target = new UniqList<string>();
         const words = getWordsFromPosition(document, position);
         if (!words) {
             return undefined;
         }
-        target.merge(words);
 
         const selections = getWordsFromSelections(document);
         if (selections) {
-            for (let i = selections.length - 1; i > 0; i--) {
-                target.unshift(selections[i]);
-            }
+            words.unshift(...selections);
         }
-        const result = await this.lookuper.lookupAll(target.toArray());
+        const target = Array.from(new Set(words));
+        const result = await this.lookuper.lookupAll(target);
         const hoveringContent = result.map((result) => {
             return this.mdFactory.produce(result);
         });
