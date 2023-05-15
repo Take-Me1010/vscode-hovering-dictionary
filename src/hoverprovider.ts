@@ -1,7 +1,6 @@
 
 import * as vscode from 'vscode';
 import { LookupResult, Lookuper } from './lookuper';
-import { UniqList } from './lib/uniqlist';
 
 function getWordsFromSelections(document: vscode.TextDocument) {
     const selections = vscode.window.activeTextEditor?.selections;

@@ -1,13 +1,11 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 
 import { DictionaryFileFormat, DictionaryFileEncoding } from './types';
 import { createDictParser, DictParser } from './parser';
 import { LineReader } from './linereader';
 import * as utils from '../utils';
-import { DictionaryStorage } from '../storage';
 
 interface DictionaryInformation {
     files: string[]
