@@ -6,6 +6,13 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 
 ## Unreleased
 
+### v0.0.2
+
+#### Changed
+
+- improved memory
+  - by introducing [level](https://github.com/Level/level).
+
 ### v0.0.1
 
 #### Added
