@@ -3,6 +3,8 @@
 out/**
 node_modules/**
 src/**
+data/**
+tools/**
 .gitignore
 .yarnrc
 webpack.config.js
