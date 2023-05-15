@@ -6,4 +6,12 @@ This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse
 
 ## Features
 
+## development
 
+```shell
+git clone https://github.com/Take-Me1010/vscode-hovering-dictionary.git
+cd vscode-hovering-dictionary
+yarn        # or npm i
+code .
+# debug this extension by F5 key.
+```
