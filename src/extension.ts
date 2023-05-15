@@ -1,40 +1,21 @@
 
 import * as vscode from 'vscode';
 
-import * as path from 'path';
-import * as fs from 'fs';
-
 import { DictionaryHoverProvider } from './hoverprovider';
 import { Lookuper } from './lookuper';
-import { registerDefaultDict, registerDictFromFile } from './register';
-import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './register/types';
+import { readDefaultDict, readDictFromFile } from './reader';
+import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './reader/types';
+import { DictionaryStorage } from './storage';
+
+// define as a module level variable in order To call `storage.deactivate()`.
+let storage: DictionaryStorage;
 
 export function activate(context: vscode.ExtensionContext) {
 	const STORAGE_PATH = context.globalStorageUri.fsPath;
-	/**
-	 * TODO: get from user settings.
-	 */
-	const dictionaryIdentifiers = ['default'];
 
-	const lookuper = new Lookuper(context, dictionaryIdentifiers);
+	storage = new DictionaryStorage(STORAGE_PATH);
+	const lookuper = new Lookuper(context, storage);
 	const dictionaryHoverProvider = new DictionaryHoverProvider(lookuper);
-
-	if (!fs.existsSync(path.resolve(STORAGE_PATH, 'default.json'))) {
-		if (!fs.existsSync(STORAGE_PATH)) {
-			fs.mkdirSync(STORAGE_PATH);
-		}
-		vscode.window.showWarningMessage('No default dictionary data found. Download and load it?', 'Yes', 'No')
-			.then((ans) => {
-				switch (ans) {
-					case 'Yes':
-						vscode.commands.executeCommand('hovering-dictionary.load-default-dictionary');
-						break;
-
-					default:
-						break;
-				}
-			});
-	}
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {
 		vscode.window.withProgress({
@@ -45,17 +26,13 @@ export function activate(context: vscode.ExtensionContext) {
 			progress.report({
 				increment: 0
 			});
-			const num = await registerDefaultDict(context);
+			const data = await readDefaultDict(context);
 
 			progress.report({
-				message: "loading data for looking up...",
 				increment: 50
 			});
-			await lookuper.loadDictionary('default');
-			vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
-			progress.report({
-				increment: 50
-			});
+			await storage.set(data);
+			vscode.window.showInformationMessage(`${Object.keys(data).length} words registered.`, { modal: false });
 		});
 	}));
 
@@ -77,21 +54,17 @@ export function activate(context: vscode.ExtensionContext) {
 		}) as DictionaryFileEncoding | undefined;
 		if (!encoding) { return; }
 
-		const identifier = await vscode.window.showInputBox({
-			title: 'input an identifier',
-			value: `${format}_${encoding}`
-		});
-		if (!identifier) { return; }
-
 		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: 'registering the given dictionary file...'
+			location: vscode.ProgressLocation.Notification
 		}, async (progress, token) => {
-			const num = await registerDictFromFile(context, identifier, { file, format, encoding });
-			progress.report({increment: 50, message: 'loading registered data...'});
-			await lookuper.loadDictionary(identifier);
-			progress.report({increment: 50});
-			vscode.window.showInformationMessage(`${num} words registered.`, { modal: false });
+			progress.report({ increment: 0, message: 'loading the given file...' });
+			const data = await readDictFromFile({ file, format, encoding });
+
+			progress.report({ increment: 50, message: 'registering the loaded data...' });
+			await storage.set(data);
+
+			vscode.window.showInformationMessage(`${Object.keys(data).length} words registered.`, { modal: false });
+			progress.report({ increment: 50});
 		});
 	}));
 
@@ -104,4 +77,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+	storage.deactivate();
+}

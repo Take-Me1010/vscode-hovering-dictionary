@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 
 import * as entry from './lib/core/entry';
 import * as rule from './lib/core/rule';
@@ -13,17 +12,10 @@ export type LookupResult = {
 };
 
 export class Lookuper {
-    private storage;
     private entryBuilder;
     /**for debug */
     private count;
-    constructor(private context: vscode.ExtensionContext, dictionaries = ['default']) {
-        this.storage = new DictionaryStorage(context.globalStorageUri.fsPath, dictionaries);
-
-        for (const dict of dictionaries) {
-            this.loadDictionary(dict);
-        }
-
+    constructor(private context: vscode.ExtensionContext, private storage: DictionaryStorage) {
         // lazy
         this.loadRule();
         this.entryBuilder = entry.build();
@@ -36,13 +28,6 @@ export class Lookuper {
         rule.load(ruleFile);
     }
 
-    public async loadDictionary(name: string) {
-        const dictPath = path.resolve(this.context.globalStorageUri.fsPath, `${name}.json`);
-        if (fs.existsSync(dictPath)) {
-            this.storage.addDictionaries(name);
-        }
-    }
-
     private createEntry(word: string): string[] {
         const { entries } = this.entryBuilder(word, true);
         return entries;
@@ -52,15 +37,15 @@ export class Lookuper {
         const result: LookupResult[] = [];
 
         const entries = this.createEntry(word);
-        for (const entry of entries) {
-            const descriptions = await this.storage.get(entry);
-            if (descriptions) {
-                result.push(...descriptions.filter(desc => (desc !== undefined)).map((description) => ({
-                    head: entry,
-                    description: description
-                })));
+        const descriptions = await this.storage.get(...entries);
+        descriptions.forEach((desc, i) => {
+            if (desc) {
+                result.push({
+                    head: entries[i],
+                    description: desc
+                });
             }
-        }
+        });
         return result;
     }
 

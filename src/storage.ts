@@ -1,42 +1,41 @@
 
 import * as path from 'path';
 
-import { loadJson } from './utils';
-
-function getDictPath(storageFolderPath: string, identifier: string) {
-    return path.resolve(storageFolderPath, `${identifier}.json`);
-}
+import { Level } from 'level';
+import { AbstractBatchPutOperation } from 'abstract-level';
 
 export class DictionaryStorage {
-    private dictPaths: string[];
     private db;
 
-    constructor(private storageFolderPath: string, identifiers: string[]) {
-        this.dictPaths = identifiers.map((identifier) => {
-            return getDictPath(storageFolderPath, identifier);
-        });
-        this.db = {} as Record<string, string>;
+    constructor(storageFolderPath: string) {
+        this.db = new Level<string, string>(path.resolve(storageFolderPath, 'db'));
         // lazy
-        this.reload();
+        this.activate();
     }
 
-    public addDictionaries(...identifiers: string[]) {
-        this.dictPaths.push(...identifiers.map((identifier) => {
-            return getDictPath(this.storageFolderPath, identifier);
-        }));
+    private async activate() {
+        await this.db.open();
     }
 
-    public async reload() {
-        for (const dictPath of this.dictPaths) {
-            const dictData: Record<string, string> = await loadJson(dictPath);
-            Object.assign(this.db, dictData);
-        }
+    public deactivate() {
+        this.db.close();
     }
 
-    public async get(key: string): Promise<string[]> {
-        return new Promise((resolve) => {
-            const desc = this.db[key];
-            resolve([desc]);
+    public async set(data: Record<string, string>) {
+        const order: AbstractBatchPutOperation<typeof this.db, string, string>[] = [];
+        Object.entries(data).map((entry) => {
+            const [head, desc] = entry;
+            order.push({
+                type: 'put',
+                key: head,
+                value: desc
+            });
         });
+        await this.db.batch(order);
+    }
+
+    public async get(...keys: string[]): Promise<(string | undefined)[]> {
+        // `getMany` may return `undefined` if the given key doesn't exists.
+        return await this.db.getMany(keys);
     }
 }

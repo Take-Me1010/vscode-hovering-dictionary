@@ -7,12 +7,13 @@ import { DictionaryFileFormat, DictionaryFileEncoding } from './types';
 import { createDictParser, DictParser } from './parser';
 import { LineReader } from './linereader';
 import * as utils from '../utils';
+import { DictionaryStorage } from '../storage';
 
 interface DictionaryInformation {
     files: string[]
 }
 
-export async function registerDefaultDict(context: vscode.ExtensionContext) {
+export async function readDefaultDict(context: vscode.ExtensionContext) {
     const dictFolder = path.resolve(context.extensionPath, 'static/gen/data');
     const dictionaryList: string[] = (await utils.loadJson(path.resolve(dictFolder, 'dict.json')) as DictionaryInformation).files;
 
@@ -24,25 +25,19 @@ export async function registerDefaultDict(context: vscode.ExtensionContext) {
         Object.assign(data, dictData);
     }
 
-    const keys = Object.keys(data);
-    await utils.writeJson(
-        path.resolve(context.globalStorageUri.fsPath, 'default.json'),
-        data
-    );
-    return keys.length;
+    return data;
 }
 
 type RegisterFileInformation = {
     file: string, format: DictionaryFileFormat, encoding: DictionaryFileEncoding
 };
 
-export async function registerDictFromFile(context: vscode.ExtensionContext, identifier: string, info: RegisterFileInformation) {
+export async function readDictFromFile(info: RegisterFileInformation) {
     const plainText = await utils.readFileAsText(info.file, info.encoding);
     const parser: DictParser = createDictParser(info.format);
     const reader = new LineReader(plainText);
 
     let dictData: Record<string, string> = {};
-    let wordCount = 0;
 
     while (reader.next()) {
         // if `reader.next() === true`, then `reader.getLine()` must be string, not `null`.
@@ -51,17 +46,11 @@ export async function registerDictFromFile(context: vscode.ExtensionContext, ide
             continue;
         }
         dictData[hd.head] = hd.desc;
-        wordCount += 1;
     }
 
     const lastData = parser.flush();
     if (lastData) {
         Object.assign(dictData, lastData);
-        wordCount += Object.keys(lastData).length;
     }
-    await utils.writeJson(
-        path.resolve(context.globalStorageUri.fsPath, `${identifier}.json`),
-        dictData
-    );
-    return wordCount;
+    return dictData;
 }
