@@ -24,6 +24,10 @@ function getWordsFromPosition(document: vscode.TextDocument, position: vscode.Po
 class MarkdownFactory {
     private replaceRules;
     constructor() {
+        /**
+         * In `style` in a span tag, only `color` and `background-color` are permitted.
+         * ref: https://stackoverflow.com/questions/67749752/how-to-apply-styling-and-html-tags-on-hover-message-with-vscode-api
+         */
         this.replaceRules = [
             {
                 search: "(■.+|◆.+)",
