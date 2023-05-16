@@ -6,16 +6,24 @@ import { Lookuper } from './lookuper';
 import { readDefaultDict, readDictFromFile } from './reader';
 import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './reader/types';
 import { DictionaryStorage } from './storage';
+import { GlobalStateManager } from './state';
 
 // define as a module level variable in order To call `storage.deactivate()`.
 let storage: DictionaryStorage;
 
 export function activate(context: vscode.ExtensionContext) {
 	const STORAGE_PATH = context.globalStorageUri.fsPath;
+	const stateManager = new GlobalStateManager(context);
 
 	storage = new DictionaryStorage(STORAGE_PATH);
+
 	const lookuper = new Lookuper(context, storage);
-	const dictionaryHoverProvider = new DictionaryHoverProvider(lookuper);
+	const isShown = stateManager.get('hoverIsShown') ?? true;
+	const hoverProvider = new DictionaryHoverProvider(lookuper, isShown);
+
+	stateManager.on('hoverIsShown', (value) => {
+		hoverProvider.setIsShown(value);
+	});
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {
 		vscode.window.withProgress({
@@ -64,14 +72,18 @@ export function activate(context: vscode.ExtensionContext) {
 			await storage.set(data);
 
 			vscode.window.showInformationMessage(`${Object.keys(data).length} words registered.`, { modal: false });
-			progress.report({ increment: 50});
+			progress.report({ increment: 50 });
 		});
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.toggleHoverIsShown', () => {
+		stateManager.set('hoverIsShown', !stateManager.get('hoverIsShown'));
 	}));
 
 	context.subscriptions.push(
 		vscode.languages.registerHoverProvider(
 			'*',
-			dictionaryHoverProvider
+			hoverProvider
 		)
 	);
 }

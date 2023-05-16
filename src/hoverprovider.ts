@@ -66,12 +66,16 @@ ${description}
 
 export class DictionaryHoverProvider implements vscode.HoverProvider {
     private mdFactory;
-    constructor(private lookuper: Lookuper) {
+    constructor(private lookuper: Lookuper, private hoverIsShown: boolean) {
         this.mdFactory = new MarkdownFactory();
     }
 
+    public setIsShown(hoverIsShown: boolean) {
+        this.hoverIsShown = hoverIsShown;
+    }
+
     async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Hover | null | undefined> {
-        if (token.isCancellationRequested) {
+        if (token.isCancellationRequested || !this.hoverIsShown) {
             return undefined;
         }
         const words = getWordsFromPosition(document, position);
