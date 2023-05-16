@@ -1,13 +1,29 @@
 {
 	"name": "hovering-dictionary",
+	"author": {
+		"name": "Take-Me1010"
+	},
+	"publisher": "Take-Me1010",
 	"displayName": "hovering-dictionary",
-	"description": "",
-	"version": "0.0.2",
+	"description": "VSCode extension for looking up words your mouse cursor is indicating",
+	"homepage": "https://github.com/Take-Me1010/vscode-hovering-dictionary",
+	"license": "MIT",
+	"version": "0.0.3",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Take-Me1010/vscode-hovering-dictionary"
+	},
+	"bugs": {
+		"url": "https://github.com/Take-Me1010/vscode-hovering-dictionary/issues"
+	},
 	"engines": {
 		"vscode": "^1.77.0"
 	},
 	"categories": [
 		"Other"
+	],
+	"keywords": [
+		"dictionary"
 	],
 	"activationEvents": [
 		"onStartupFinished"
@@ -44,6 +60,7 @@
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
 		"@vscode/test-electron": "^1.6.2",
+		"copy-webpack-plugin": "^11.0.0",
 		"eslint": "^7.32.0",
 		"glob": "^7.1.7",
 		"json5": "^2.2.3",
