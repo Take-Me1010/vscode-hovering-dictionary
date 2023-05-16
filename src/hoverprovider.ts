@@ -52,7 +52,7 @@ class MarkdownFactory {
             description = description.replaceAll(new RegExp(rule.search, 'g'), rule.replace);
         }
         const query = head.trim().replaceAll(' ', '+');
-        
+
         const content = `
 # [${head}](https://eow.alc.co.jp/search?q=${query})
 ${description}

@@ -6,7 +6,7 @@ interface GlobalState {
 
 type Event<T extends keyof GlobalState> = (val: GlobalState[T]) => void;
 
-type Listener= {
+type Listener = {
     [T0 in keyof GlobalState]: Event<T0>[]
 };
 

@@ -14,8 +14,8 @@ export class ToggleButton {
         this.btn.tooltip = options.tooltip;
     }
 
-    setIcon(isShown: boolean){
-        const icon = isShown? '$(search-stop)' : '$(search)';
+    setIcon(isShown: boolean) {
+        const icon = isShown ? '$(search-stop)' : '$(search)';
         this.btn.text = icon;
     }
 
