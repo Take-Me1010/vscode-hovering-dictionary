@@ -7,6 +7,7 @@ import { readDefaultDict, readDictFromFile } from './reader';
 import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './reader/types';
 import { DictionaryStorage } from './storage';
 import { GlobalStateManager } from './state';
+import { ToggleButton } from './uix';
 
 // define as a module level variable in order To call `storage.deactivate()`.
 let storage: DictionaryStorage;
@@ -21,8 +22,15 @@ export function activate(context: vscode.ExtensionContext) {
 	const isShown = stateManager.get('hoverIsShown') ?? true;
 	const hoverProvider = new DictionaryHoverProvider(lookuper, isShown);
 
+	const toggleButton = new ToggleButton(vscode.StatusBarAlignment.Right, 0, {
+		command: 'hovering-dictionary.toggleHoverIsShown',
+		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)'
+	});
+	toggleButton.show();
+	
 	stateManager.on('hoverIsShown', (value) => {
 		hoverProvider.setIsShown(value);
+		toggleButton.setIcon(value);
 	});
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {
