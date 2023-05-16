@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const copyPlugin = require('copy-webpack-plugin');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -22,10 +23,15 @@ const extensionConfig = {
   externals: {
     vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
     // modules added here also need to be added in the .vsceignore file
-    // ref: https://github.com/Level/leveldown/issues/725
-    'abstract-level': 'abstract-level',
-    level: 'level'
   },
+  plugins: [
+    new copyPlugin({
+      patterns: [{
+        from: './node_modules/classic-level/prebuilds',
+        to: './prebuilds'
+      }]
+    })
+  ],
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js']
