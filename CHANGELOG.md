@@ -6,6 +6,14 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 
 ## Unreleased
 
+### v0.0.3
+
+#### Changed
+
+- add prebuilds for level database.
+  - This made it possible for this extension to function by installing the .vsix file.
+
+
 ### v0.0.2
 
 #### Changed
