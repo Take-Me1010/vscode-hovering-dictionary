@@ -36,8 +36,8 @@
 				"title": "hovering-dictionary: load default dictionary"
 			},
 			{
-				"command": "hovering-dictionary.load-dictionary",
-				"title": "hovering-dictionary: load your dictionary file"
+				"command": "hovering-dictionary.import-dictionary",
+				"title": "hovering-dictionary: import your dictionary file"
 			},
 			{
 				"command": "hovering-dictionary.toggleHoverIsShown",

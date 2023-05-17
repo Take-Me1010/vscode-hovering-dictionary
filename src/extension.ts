@@ -48,11 +48,12 @@ export function activate(context: vscode.ExtensionContext) {
 				increment: 50
 			});
 			await storage.set(data);
+			stateManager.set('defaultDictLoadedOrRejectedLoading', true);
 			vscode.window.showInformationMessage(`${Object.keys(data).length} words registered.`, { modal: false });
 		});
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-dictionary', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.import-dictionary', async () => {
 		const uris = await vscode.window.showOpenDialog({
 			canSelectMany: false,
 			title: 'select a dictionary file'
@@ -99,6 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
 			.then(async (ans) => {
 				if (ans === 'Yes') {
 					await vscode.commands.executeCommand('hovering-dictionary.load-default-dictionary');
+				} else {
 					stateManager.set('defaultDictLoadedOrRejectedLoading', true);
 				}
 			});
