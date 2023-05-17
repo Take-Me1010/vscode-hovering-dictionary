@@ -14,6 +14,13 @@ This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse
 [Mouse Dictionary](https://github.com/wtetsu/mouse-dictionary/) provides a very fast and flexible way to refer to a dictionary.
 By partially using the code in this Chrome extension, I realize its similar function in VSCode!
 
+- Fast reference: It usually takes only less than 1 ms to obtain the reference to the words your mouse indicates.
+- Case-sensitive search: camelCase -> camel case, snake_case -> snake case, etc...
+- Expandability: You can import many other dictionary data if you want.
+
+You can toggle the visibility of the hover by simply clicking the right side button or the command `hovering-dictionary.toggle-hover-visibility`.
+I recommend registering this command `hovering-dictionary.toggle-hover-visibility` as a short-cut key.
+
 ### Importing dictionaries
 
 This extension includes the default dictionary provided in [ejdict-hand](https://github.com/kujirahand/EJDict) (Public Domain).
