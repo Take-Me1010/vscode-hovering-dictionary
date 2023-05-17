@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)'
 	});
 	toggleButton.show();
-	
+
 	stateManager.on('hoverIsShown', (value) => {
 		hoverProvider.setIsShown(value);
 		toggleButton.setIcon(value);
@@ -94,6 +94,15 @@ export function activate(context: vscode.ExtensionContext) {
 			hoverProvider
 		)
 	);
+	if (!stateManager.get('defaultDictLoadedOrRejectedLoading')) {
+		vscode.window.showInformationMessage('Thank you for installing, do you want to load default dictionary (English into Japanese)?', 'Yes', 'No')
+			.then(async (ans) => {
+				if (ans === 'Yes') {
+					await vscode.commands.executeCommand('hovering-dictionary.load-default-dictionary');
+					stateManager.set('defaultDictLoadedOrRejectedLoading', true);
+				}
+			});
+	}
 }
 
 // this method is called when your extension is deactivated

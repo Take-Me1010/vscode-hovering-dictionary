@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 interface GlobalState {
     readonly hoverIsShown: boolean;
+    readonly defaultDictLoadedOrRejectedLoading: boolean;
 }
 
 type Event<T extends keyof GlobalState> = (val: GlobalState[T]) => void;
