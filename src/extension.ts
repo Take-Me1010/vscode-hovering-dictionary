@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const hoverProvider = new DictionaryHoverProvider(lookuper, isShown);
 
 	const toggleButton = new ToggleButton(vscode.StatusBarAlignment.Right, 0, {
-		command: 'hovering-dictionary.toggleHoverIsShown',
+		command: 'hovering-dictionary.toggle-hover-visibility',
 		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)'
 	});
 	toggleButton.show();
@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.toggleHoverIsShown', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.toggle-hover-visibility', () => {
 		stateManager.set('hoverIsShown', !stateManager.get('hoverIsShown'));
 	}));
 

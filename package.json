@@ -40,7 +40,7 @@
 				"title": "hovering-dictionary: import your dictionary file"
 			},
 			{
-				"command": "hovering-dictionary.toggleHoverIsShown",
+				"command": "hovering-dictionary.toggle-hover-visibility",
 				"title": "hovering-dictionary: toggle whether the hover is shown or not"
 			}
 		]
