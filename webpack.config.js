@@ -26,10 +26,10 @@ const extensionConfig = {
   },
   plugins: [
     new copyPlugin({
-      patterns: [{
-        from: './node_modules/classic-level/prebuilds',
-        to: './prebuilds'
-      }]
+      patterns: ['win32-ia32', 'win32-x64', 'linux-x64', 'linux-arm64', 'linux-arm', 'darwin-x64+arm64'].map((kind) => ({
+        from: `./node_modules/classic-level/prebuilds/${kind}`,
+        to: `./prebuilds/${kind}`
+      }))
     })
   ],
   resolve: {
