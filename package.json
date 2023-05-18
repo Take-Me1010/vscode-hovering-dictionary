@@ -43,7 +43,16 @@
 				"command": "hovering-dictionary.toggle-hover-visibility",
 				"title": "hovering-dictionary: toggle whether the hover is shown or not"
 			}
-		]
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "hovering-dictionary.resultViewer",
+					"name": "Hovering Dictionary",
+					"type": "webview"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run package",
@@ -61,6 +70,7 @@
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
 		"@types/vscode": "^1.77.0",
+		"@types/vscode-webview": "^1.57.1",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
 		"@vscode/test-electron": "^1.6.2",

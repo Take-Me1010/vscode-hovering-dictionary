@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 interface GlobalState {
     readonly hoverIsShown: boolean;
+    readonly resultViewerIsShown: boolean;
     readonly defaultDictLoadedOrRejectedLoading: boolean;
 }
 

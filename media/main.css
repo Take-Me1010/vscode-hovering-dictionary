@@ -1,0 +1,16 @@
+body {
+	background-color: transparent;
+}
+
+section.entry {
+	border-bottom: 1px solid var(--vscode-button-foreground);
+}
+
+section.entry > .head {
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+span.group {
+	color: #080;
+}

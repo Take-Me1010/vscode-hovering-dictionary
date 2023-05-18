@@ -63,15 +63,22 @@ ${description}
         return md;
     }
 }
+type HoverCallback = (result: LookupResult[]) => Promise<void> | void;
 
 export class DictionaryHoverProvider implements vscode.HoverProvider {
     private mdFactory;
+    private callbacks: HoverCallback[];
     constructor(private lookuper: Lookuper, private hoverIsShown: boolean) {
         this.mdFactory = new MarkdownFactory();
+        this.callbacks = [];
     }
 
     public setIsShown(hoverIsShown: boolean) {
         this.hoverIsShown = hoverIsShown;
+    }
+
+    public on(event: 'hover', callback: HoverCallback) {
+        this.callbacks.push(callback);
     }
 
     async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Hover | null | undefined> {
@@ -89,6 +96,9 @@ export class DictionaryHoverProvider implements vscode.HoverProvider {
         }
         const target = Array.from(new Set(words));
         const result = await this.lookuper.lookupAll(target);
+        for (const callback of this.callbacks) {
+            callback(result);
+        }
         const hoveringContent = result.map((result) => {
             return this.mdFactory.produce(result);
         });

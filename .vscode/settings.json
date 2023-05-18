@@ -17,5 +17,6 @@
         "lookuper",
         "uniqlist",
         "wtetsu"
-    ]
+    ],
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
