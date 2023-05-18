@@ -7,7 +7,7 @@ import { readDefaultDict, readDictFromFile } from './reader';
 import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT_FILE_FORMAT } from './reader/types';
 import { DictionaryStorage } from './storage';
 import { GlobalStateManager } from './state';
-import { ToggleButton } from './uix';
+import { DictionaryExplorerWebview, ToggleButton } from './uix';
 
 // define as a module level variable in order To call `storage.deactivate()`.
 let storage: DictionaryStorage;
@@ -28,9 +28,25 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	toggleButton.show();
 
+	const webview = new DictionaryExplorerWebview(context.extensionUri, stateManager.get('resultViewerIsShown') ?? true);
+	context.subscriptions.push(vscode.window.registerWebviewViewProvider(
+		DictionaryExplorerWebview.viewType, webview
+	));
+
+	hoverProvider.on('hover', (result) => {
+		webview.updateEntries(result);
+	});
+
 	stateManager.on('hoverIsShown', (value) => {
 		hoverProvider.setIsShown(value);
 		toggleButton.setIcon(value);
+	});
+
+	stateManager.on('resultViewerIsShown', (value) => {
+		if (value) {
+			webview.clearEntries();
+		}
+		webview.setIsShown(value);
 	});
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {
