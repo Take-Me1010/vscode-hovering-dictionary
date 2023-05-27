@@ -19,6 +19,10 @@ export class ToggleButton {
         this.btn.text = icon;
     }
 
+    public getStatusBarItem() {
+        return this.btn;
+    }
+
     public show() {
         this.btn.show();
     }

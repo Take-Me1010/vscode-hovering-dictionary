@@ -26,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 		command: 'hovering-dictionary.toggle-hover-visibility',
 		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)'
 	});
+	context.subscriptions.push(toggleButton.getStatusBarItem());
 	toggleButton.show();
 
 	const webview = new DictionaryExplorerWebview(context.extensionUri, stateManager.get('resultViewerIsShown') ?? true);

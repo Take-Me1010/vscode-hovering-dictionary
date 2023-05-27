@@ -82,7 +82,7 @@ export class DictionaryHoverProvider implements vscode.HoverProvider {
     }
 
     async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Hover | null | undefined> {
-        if (token.isCancellationRequested || !this.hoverIsShown) {
+        if (token.isCancellationRequested) {
             return undefined;
         }
         const words = getWordsFromPosition(document, position);
@@ -98,6 +98,9 @@ export class DictionaryHoverProvider implements vscode.HoverProvider {
         const result = await this.lookuper.lookupAll(target);
         for (const callback of this.callbacks) {
             callback(result);
+        }
+        if (!this.hoverIsShown) {
+            return undefined;
         }
         const hoveringContent = result.map((result) => {
             return this.mdFactory.produce(result);
