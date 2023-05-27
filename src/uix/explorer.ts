@@ -52,12 +52,33 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
         }
     }
 
+    /**
+     * get CSS for the result viewer.
+     */
+    private getMainStyleCss() {
+        return /* css */ `
+body {
+    background-color: transparent;
+}
+
+section.entry {
+    border-bottom: 1px solid var(--vscode-button-foreground);
+}
+
+section.entry > .head {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+span.group {
+    color: #080;
+}`;
+    }
+
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
         const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
         const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-        const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
-
         // Use a nonce to only allow a specific script to be run.
         const nonce = getNonce();
 
@@ -65,13 +86,14 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="${styleResetUri}" rel="stylesheet">
     <link href="${styleVSCodeUri}" rel="stylesheet">
-    <link href="${styleMainUri}" rel="stylesheet">
-
+    <style nonce="${nonce}">
+        ${this.getMainStyleCss()}
+    </style>
     <title>Hover Dictionary Reference View</title>
 </head>
 <body>
