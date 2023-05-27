@@ -6,6 +6,12 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 
 ## Released
 
+### v0.2.1
+
+#### fixed
+
+- fixed the problem that the statusbar item to toggle the visibility of the looking-up result is not shown.
+
 ### v0.2.0
 
 #### Added
