@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(toggleButton.getStatusBarItem());
 	toggleButton.show();
 
-	const webview = new DictionaryExplorerWebview(context.extensionUri, stateManager.get('resultViewerIsShown') ?? true);
+	const webview = new DictionaryExplorerWebview(context.extensionUri);
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider(
 		DictionaryExplorerWebview.viewType, webview
 	));
@@ -42,13 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
 	stateManager.on('hoverIsShown', (value) => {
 		hoverProvider.setIsShown(value);
 		toggleButton.setIcon(value);
-	});
-
-	stateManager.on('resultViewerIsShown', (value) => {
-		if (value) {
-			webview.clearEntries();
-		}
-		webview.setIsShown(value);
 	});
 
 	context.subscriptions.push(vscode.commands.registerCommand('hovering-dictionary.load-default-dictionary', async () => {

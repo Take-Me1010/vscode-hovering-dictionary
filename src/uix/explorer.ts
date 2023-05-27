@@ -15,8 +15,7 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
 
     private view?: vscode.WebviewView;
 
-    constructor(private readonly _extensionUri: vscode.Uri, private isShown: boolean) {
-
+    constructor(private readonly _extensionUri: vscode.Uri) {
     }
 
     public resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -31,12 +30,8 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
     }
 
-    public setIsShown(isShown: boolean) {
-        this.isShown = isShown;
-    }
-
     public updateEntries(entries: LookupResult[]) {
-        if (this.view && this.isShown) {
+        if (this.view) {
             this.view.webview.postMessage({
                 type: 'POST',
                 body: entries

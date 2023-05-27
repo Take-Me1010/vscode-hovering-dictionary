@@ -1,8 +1,17 @@
 import * as vscode from 'vscode';
 
 interface GlobalState {
+    /**
+     * Whether the user allows showing the hovering result.
+     * 
+     * NOTE: This state should NOT be managed via the VSCode configuration because this state assumed to be frequently changed.
+     */
     readonly hoverIsShown: boolean;
-    readonly resultViewerIsShown: boolean;
+    /**
+     * Whether the user already has loaded the default dictionary or rejected it.
+     * 
+     * NOTE: This state should NOT be managed via the VSCode configuration because this state is assumed to be only once used and stored in order to check if the user already has loaded the default dictionary.
+     */
     readonly defaultDictLoadedOrRejectedLoading: boolean;
 }
 
@@ -12,6 +21,11 @@ type Listener = {
     [T0 in keyof GlobalState]: Event<T0>[]
 };
 
+/**
+ * `GlobalStateManager` stores only the state to be stored across sessions.
+ * 
+ * - `on(key, callback)` method provides what is called eventlistener. the registered callback functions will be called when the associated state is mutated.
+ */
 export class GlobalStateManager {
     private state;
     private listener;
