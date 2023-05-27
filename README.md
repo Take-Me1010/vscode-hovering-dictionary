@@ -9,7 +9,7 @@ This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse
 
 **Fast looking up words with case sensitivity**
 
-![demo.gif](https://github.com/Take-Me1010/vscode-hovering-dictionary/blob/main/image/demo.gif?raw=true)
+![demo.gif](./image/demo.gif?raw=true)
 (Note that this demonstration was held after importing 英辞郎(EIJIRO) dictionary data, see [#importing-dictionaries](#importing-dictionaries). Many expressions such as "on one's own" are NOT included in the default dictionary.)
 
 [Mouse Dictionary](https://github.com/wtetsu/mouse-dictionary/) provides a very fast and flexible way to refer to a dictionary.
