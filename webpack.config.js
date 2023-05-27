@@ -4,9 +4,24 @@
 
 const path = require('path');
 const copyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
+
+/**
+ * @returns {'development' | 'production'}
+ */
+function getMode() {
+  const argv = process.argv;
+  const i = argv.indexOf('--mode');
+  if (i > 0) {
+    //@ts-ignore
+    return argv[i+1];
+  } else {
+    return 'development';
+  }
+}
 
 /** @type WebpackConfig */
 const extensionConfig = {
@@ -30,6 +45,9 @@ const extensionConfig = {
         from: `./node_modules/classic-level/prebuilds/${kind}`,
         to: `./prebuilds/${kind}`
       }))
+    }),
+    new webpack.DefinePlugin({
+      DEBUG: JSON.stringify(getMode() === 'development')
     })
   ],
   resolve: {

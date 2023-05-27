@@ -51,11 +51,11 @@ export class Lookuper {
 
     public async lookupAll(words: string[]): Promise<LookupResult[]> {
         const count = this.count++;
-        console.time(`look up - ${count}`);
+        DEBUG && console.time(`look up - ${count}`);
         const results = await Promise.all(words.map((word) => {
             return this.lookup(word);
         }));
-        console.timeEnd(`look up - ${count}`);
+        DEBUG && console.timeEnd(`look up - ${count}`);
         return results.reduce((prev, curr) => {
             return prev.concat(...curr);
         }, []);
