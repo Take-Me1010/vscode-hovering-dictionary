@@ -13,6 +13,8 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 - add a side bar button to toggle the visibility of the hover.
 - add a notification to ask whether the user load the default dictionary data.
 
+## Unreleased
+
 ### v0.0.3
 
 #### Changed
