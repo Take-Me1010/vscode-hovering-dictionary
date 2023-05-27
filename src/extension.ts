@@ -24,7 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const toggleButton = new ToggleButton(vscode.StatusBarAlignment.Right, 0, {
 		command: 'hovering-dictionary.toggle-hover-visibility',
-		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)'
+		tooltip: 'hovering-dictionary: Toggle hover state (shown or not shown)',
+		hoverIsShown: isShown
 	});
 	context.subscriptions.push(toggleButton.getStatusBarItem());
 	toggleButton.show();

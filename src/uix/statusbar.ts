@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 interface Option {
     command: string
     tooltip: string
+    hoverIsShown: boolean
 }
 
 export class ToggleButton {
@@ -12,6 +13,7 @@ export class ToggleButton {
         this.btn = vscode.window.createStatusBarItem(alignment, priority);
         this.btn.command = options.command;
         this.btn.tooltip = options.tooltip;
+        this.setIcon(options.hoverIsShown);
     }
 
     setIcon(isShown: boolean) {
