@@ -6,6 +6,12 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 
 ## Released
 
+### v0.2.2
+
+#### fixed
+
+- fixed the problem that the extension is crashed when the user opens another window. ([#4](https://github.com/Take-Me1010/vscode-hovering-dictionary/pull/4))
+
 ### v0.2.1
 
 #### fixed
