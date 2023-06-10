@@ -40,3 +40,8 @@ yarn        # or npm i
 code .
 # debug this extension by F5 key.
 ```
+
+### How to work?
+
+This extension uses [Level](https://github.com/Level/level) as a database in the background.
+The dictionary data is registered and kept in the storage directory the VSCode allows; e.g. `C:\Users\hoge\AppData\Roaming\Code\User\globalStorage\take-me1010.hovering-dictionary` if you are a Windows user.
