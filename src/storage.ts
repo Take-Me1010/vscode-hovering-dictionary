@@ -7,17 +7,21 @@ import { AbstractBatchPutOperation } from 'abstract-level';
 export class DictionaryStorage {
     private db;
 
+    /**
+     * To get data from the database, don't forget to call `activate`.
+     * 
+     * NOTE: But multiple instances access at the same time seem not to be supported. Avoid it by using `vscode.window.onDidChangeWindowState`.
+     * @param storageFolderPath the database path.
+     */
     constructor(storageFolderPath: string) {
         this.db = new Level<string, string>(path.resolve(storageFolderPath, 'db'));
-        // lazy
-        this.activate();
     }
 
-    private async activate() {
+    public async activate() {
         await this.db.open();
     }
 
-    public deactivate() {
+    public async deactivate() {
         this.db.close();
     }
 

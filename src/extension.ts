@@ -106,6 +106,17 @@ export function activate(context: vscode.ExtensionContext) {
 			hoverProvider
 		)
 	);
+
+	vscode.window.onDidChangeWindowState((e) => {
+		if (e.focused) {
+			storage.activate();
+		} else {
+			storage.deactivate();
+		}
+	});
+	if (vscode.window.state.focused) {
+		storage.activate();
+	}
 	if (!stateManager.get('defaultDictLoadedOrRejectedLoading')) {
 		vscode.window.showInformationMessage('Thank you for installing, do you want to load default dictionary (English into Japanese)?', 'Yes', 'No')
 			.then(async (ans) => {
