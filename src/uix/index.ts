@@ -1,3 +1,3 @@
 
 export { ToggleButton } from './statusbar';
-export { DictionaryExplorerWebview } from './explorer';
+export { DictionaryExplorerWebview } from './webview';

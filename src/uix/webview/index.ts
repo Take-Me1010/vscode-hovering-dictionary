@@ -1,0 +1,1 @@
+export { DictionaryExplorerWebview } from './explorer';

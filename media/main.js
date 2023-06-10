@@ -6,7 +6,7 @@
      * @property {string} head
      * @property {string} description
      * 
-     * @typedef {import('../src/uix/explorer').MessagePayload} MessagePayload
+     * @typedef {import('../src/uix/webview/explorer').MessagePayload} MessagePayload
      * @typedef {import('vscode-webview').WebviewApi<LookupResult[]>} WebviewApi
     */
 
