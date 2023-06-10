@@ -3,11 +3,17 @@ import * as vscode from 'vscode';
 import { getCommonStyle } from './common';
 import { LookupResult } from '../../lookuper';
 
+export type ReplaceRule = { search: string, replace: string };
+export type UpdateBody = ({ state: 'replaceRule', value: ReplaceRule })[];
+
 export type MessagePayload = {
     type: 'POST'
     body: LookupResult[]
 } | {
     type: 'DELETE'
+} | {
+    type: 'UPDATE',
+    body: UpdateBody
 };
 
 export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
@@ -47,6 +53,16 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
         }
     }
 
+    public setReplaceRules(rules: ReplaceRule[]) {
+        if (this.view) {
+            const body: UpdateBody = rules.map((rule) => ({ state: 'replaceRule', value: rule }));
+            this.view.webview.postMessage({
+                type: 'UPDATE',
+                body: body
+            } as MessagePayload);
+        }
+    }
+
     /**
      * get CSS for the result viewer.
      */
@@ -72,8 +88,6 @@ span.group {
 
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
-        // const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-        // const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
         // Use a nonce to only allow a specific script to be run.
         const nonce = getNonce();
 
