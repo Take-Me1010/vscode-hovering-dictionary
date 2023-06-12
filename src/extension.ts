@@ -107,12 +107,20 @@ export function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
-	vscode.window.onDidChangeWindowState((e) => {
-		if (e.focused) {
-			storage.activate();
-		} else {
-			storage.deactivate();
+	vscode.window.onDidChangeWindowState((state) => {
+		// close the database in inactive windows.
+		if (!state.focused) {
+			if (storage.isOpen()) {
+				storage.deactivate();
+			}
+			return;
 		}
+		// To avoid opening the database before it is closed in another instance.
+		setTimeout(() => {
+			if (!storage.isOpen()) {
+				storage.activate();
+			}
+		}, 10);
 	});
 	if (vscode.window.state.focused) {
 		storage.activate();

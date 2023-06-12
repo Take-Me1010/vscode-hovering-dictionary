@@ -18,11 +18,15 @@ export class DictionaryStorage {
     }
 
     public async activate() {
-        await this.db.open();
+        return await this.db.open();
     }
 
     public async deactivate() {
-        this.db.close();
+        return this.db.close();
+    }
+
+    public isOpen() {
+        return this.db.status === 'open';
     }
 
     public async set(data: Record<string, string>) {
@@ -39,6 +43,9 @@ export class DictionaryStorage {
     }
 
     public async get(...keys: string[]): Promise<(string | undefined)[]> {
+        if (!this.isOpen()) {
+            return Array(keys.length).fill(undefined);
+        }
         // `getMany` may return `undefined` if the given key doesn't exists.
         return await this.db.getMany(keys);
     }
