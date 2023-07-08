@@ -8,6 +8,7 @@ import { DictionaryFileEncoding, DICT_FILE_ENCODINGS, DictionaryFileFormat, DICT
 import { DictionaryStorage } from './storage';
 import { GlobalStateManager } from './state';
 import { DictionaryExplorerWebview, ToggleButton } from './uix';
+import { ExtensionConfiguration } from './config';
 
 // define as a module level variable in order To call `storage.deactivate()`.
 let storage: DictionaryStorage;
@@ -15,12 +16,13 @@ let storage: DictionaryStorage;
 export function activate(context: vscode.ExtensionContext) {
 	const STORAGE_PATH = context.globalStorageUri.fsPath;
 	const stateManager = new GlobalStateManager(context);
+	const config = new ExtensionConfiguration('hovering-dictionary');
 
 	storage = new DictionaryStorage(STORAGE_PATH);
 
 	const lookuper = new Lookuper(context, storage);
 	const isShown = stateManager.get('hoverIsShown') ?? true;
-	const hoverProvider = new DictionaryHoverProvider(lookuper, isShown);
+	const hoverProvider = new DictionaryHoverProvider(lookuper, config.get('replaceRulesForHover'), isShown);
 
 	const toggleButton = new ToggleButton(vscode.StatusBarAlignment.Right, 0, {
 		command: 'hovering-dictionary.toggle-hover-visibility',
@@ -30,7 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(toggleButton.getStatusBarItem());
 	toggleButton.show();
 
-	const webview = new DictionaryExplorerWebview(context.extensionUri);
+	const webview = new DictionaryExplorerWebview(context.extensionUri, config.get('customCssColorsForResultViewer'), config.get('replaceRulesForResultViewer'));
+
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider(
 		DictionaryExplorerWebview.viewType, webview
 	));

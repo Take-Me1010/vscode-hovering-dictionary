@@ -52,6 +52,87 @@
 					"type": "webview"
 				}
 			]
+		},
+		"configuration": {
+			"title": "Hovering Dictionary Configuration",
+			"properties": {
+				"hovering-dictionary.replaceRulesForHover": {
+					"type": "array",
+					"markdownDescription": "The rules that determines how to format the description of the dictionary.\nNote: In `style` in a span tag, only `color` and `background-color` are permitted.",
+					"items": {
+						"type": "object",
+						"required": ["search", "replace"],
+						"properties": {
+							"search": {
+								"type": "string"
+							},
+							"replace": {
+								"type": "string"
+							}
+						}
+					},
+					"default": [
+						{
+							"search": "(■.+|◆.+)",
+							"replace": "<span style=\"color:#080;\">$1</span>"
+						},
+						{
+							"search": "({.+?}|\\[.+?\\]|\\(.+?\\))",
+							"replace": "<span style=\"color:#080;\">$1</span>"
+						},
+						{
+							"search": "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
+							"replace": "<span style=\"color:#080;\">$1</span>"
+						},
+						{
+							"search": "\\n|\\\\n",
+							"replace": "<br/>"
+						}
+					]
+				},
+				"hovering-dictionary.replaceRulesForResultViewer": {
+					"type": "array",
+					"description": "The rules that determines how to format the description of the dictionary.",
+					"items": {
+						"type": "object",
+						"required": ["search", "replace"],
+						"properties": {
+							"search": {
+								"type": "string"
+							},
+							"replace": {
+								"type": "string"
+							}
+						}
+					},
+					"default":  [
+						{
+							"search": "(■.+|◆.+)",
+							"replace": "<span class=\"group\">$1</span>"
+						},
+						{
+							"search": "({.+?}|\\[.+?\\]|\\(.+?\\))",
+							"replace": "<span class=\"group\">$1</span>"
+						},
+						{
+							"search": "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
+							"replace": "<span class=\"group\">$1</span>"
+						},
+						{
+							"search": "\\n|\\\\n",
+							"replace": "<br/>"
+						}
+					]
+				},
+				"hovering-dictionary.customCssColorsForResultViewer": {
+					"type": "object",
+					"description": "The key-value object that determines the mapping of css classes to their color values.\n",
+					"default": {
+						"group": "#080"
+					},
+					"additionalProperties": true
+				}
+			}
 		}
 	},
 	"scripts": {

@@ -2,8 +2,8 @@
 import * as vscode from 'vscode';
 import { getCommonStyle } from './common';
 import { LookupResult } from '../../lookuper';
+import { ReplaceRule, CustomCssColors } from '../../config';
 
-export type ReplaceRule = { search: string, replace: string };
 export type UpdateBody = ({ state: 'replaceRule', value: ReplaceRule })[];
 
 export type MessagePayload = {
@@ -21,7 +21,7 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
 
     private view?: vscode.WebviewView;
 
-    constructor(private readonly _extensionUri: vscode.Uri) {
+    constructor(private readonly _extensionUri: vscode.Uri, private colorMapping: CustomCssColors, private replaceRules: ReplaceRule[]) {
     }
 
     public resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -53,14 +53,27 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
         }
     }
 
-    public setReplaceRules(rules: ReplaceRule[]) {
-        if (this.view) {
-            const body: UpdateBody = rules.map((rule) => ({ state: 'replaceRule', value: rule }));
-            this.view.webview.postMessage({
-                type: 'UPDATE',
-                body: body
-            } as MessagePayload);
-        }
+    // public updateReplaceRule() {
+    //     if (this.view) {
+    //         const body: UpdateBody = this.replaceRules.map((rule) => ({ state: 'replaceRule', value: rule }));
+    //         this.view.webview.postMessage({
+    //             type: 'UPDATE',
+    //             body: body
+    //         } as MessagePayload);
+    //     }
+    // }
+
+    /**
+     * create CSS from `this.colorMapping`.
+     * @returns 
+     */
+    private createCustomCss() {
+        return Object.entries(this.colorMapping).map(([className, value]) => {
+            return /* css */`
+span.${className} {
+    color: ${value};
+}`;
+        }).join('\n');
     }
 
     /**
@@ -81,9 +94,8 @@ section.entry > .head {
     margin-bottom: 0.5rem;
 }
 
-span.group {
-    color: #080;
-}`;
+${this.createCustomCss()}
+`;
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
@@ -109,6 +121,9 @@ span.group {
 <body>
     <article id="container">
     </article>
+    <script nonce="${nonce}">
+        window.initialReplaceRules = ${JSON.stringify(this.replaceRules)};
+    </script>
     <script nonce="${nonce}" src="${scriptUri}"></script>
 </body>
 </html>`;

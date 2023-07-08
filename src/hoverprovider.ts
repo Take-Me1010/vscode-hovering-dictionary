@@ -1,5 +1,6 @@
 
 import * as vscode from 'vscode';
+import { ReplaceRule } from './config';
 import { LookupResult, Lookuper } from './lookuper';
 
 function getWordsFromSelections(document: vscode.TextDocument) {
@@ -21,30 +22,7 @@ function getWordsFromPosition(document: vscode.TextDocument, position: vscode.Po
 }
 
 class MarkdownFactory {
-    private replaceRules;
-    constructor() {
-        /**
-         * In `style` in a span tag, only `color` and `background-color` are permitted.
-         * ref: https://stackoverflow.com/questions/67749752/how-to-apply-styling-and-html-tags-on-hover-message-with-vscode-api
-         */
-        this.replaceRules = [
-            {
-                search: "(■.+|◆.+)",
-                replace: /* html */ `<span style="color:#080;">$1</span>`,
-            },
-            {
-                search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
-                replace: /* html */ `<span style="color:#080;">$1</span>`,
-            },
-            {
-                search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
-                replace: /* html */ `<span style="color:#080;">$1</span>`,
-            },
-            {
-                search: "\\n|\\\\n",
-                replace: /* html */ `<br/>`,
-            },
-        ];
+    constructor(private replaceRules: ReplaceRule[]) {
     }
     public produce(entry: LookupResult) {
         let { head, description } = entry;
@@ -68,8 +46,8 @@ type HoverCallback = (result: LookupResult[]) => Promise<void> | void;
 export class DictionaryHoverProvider implements vscode.HoverProvider {
     private mdFactory;
     private callbacks: HoverCallback[];
-    constructor(private lookuper: Lookuper, private hoverIsShown: boolean) {
-        this.mdFactory = new MarkdownFactory();
+    constructor(private lookuper: Lookuper, replaceRules: ReplaceRule[], private hoverIsShown: boolean) {
+        this.mdFactory = new MarkdownFactory(replaceRules);
         this.callbacks = [];
     }
 
