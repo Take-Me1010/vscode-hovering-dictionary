@@ -7,38 +7,22 @@
      * @property {string} description
      * 
      * @typedef {import('../src/uix/webview/explorer').MessagePayload} MessagePayload
-     * @typedef {import('../src/uix/webview/explorer').ReplaceRule} ReplaceRule
      * @typedef {import('../src/uix/webview/explorer').UpdateBody} UpdateBody
      * @typedef {import('vscode-webview').WebviewApi<LookupResult[]>} WebviewApi
+     * @typedef {UpdateBody[0]['value']} ReplaceRule
     */
 
     /**
-     * @type WebviewApi
+     * @type {WebviewApi}
      */
     const vscode = acquireVsCodeApi();
 
     const container = document.getElementById('container');
 
     /**@type {ReplaceRule[]} */
-    const rules = [
-        {
-            search: "(■.+|◆.+)",
-            replace: /* html */ `<span class="group">$1</span>`,
-        },
-        {
-            search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
-            replace: /* html */ `<span class="group">$1</span>`,
-        },
-        {
-            search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
-            replace: /* html */ `<span class="group">$1</span>`,
-        },
-        {
-            search: "\\n|\\\\n",
-            replace: /* html */ `<br/>`,
-        },
-    ];
-    
+    // @ts-ignore
+    const rules = window.initialReplaceRules;
+
     /**
      * 
      * @param {UpdateBody} body 
@@ -75,6 +59,7 @@
             case 'UPDATE':
                 {
                     updateState(payload.body);
+                    break;
                 }
         }
     });
