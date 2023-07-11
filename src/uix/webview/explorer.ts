@@ -20,8 +20,12 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
     public static readonly viewType = 'hovering-dictionary.resultViewer';
 
     private view?: vscode.WebviewView;
+    private colorMapping: CustomCssColors;
+    private replaceRules: ReplaceRule[];
 
-    constructor(private readonly _extensionUri: vscode.Uri, private colorMapping: CustomCssColors, private replaceRules: ReplaceRule[]) {
+    constructor(private readonly _extensionUri: vscode.Uri, configs: { colorMapping: CustomCssColors, replaceRules: ReplaceRule[] }) {
+        this.colorMapping = configs.colorMapping;
+        this.replaceRules = configs.replaceRules;
     }
 
     public resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -36,21 +40,17 @@ export class DictionaryExplorerWebview implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
     }
 
-    public updateEntries(entries: LookupResult[]) {
-        if (this.view) {
-            this.view.webview.postMessage({
-                type: 'POST',
-                body: entries
-            } as MessagePayload);
-        }
+    public async updateEntries(entries: LookupResult[]) {
+        return await this.view?.webview.postMessage({
+            type: 'POST',
+            body: entries
+        } as MessagePayload);
     }
 
-    public clearEntries() {
-        if (this.view) {
-            this.view.webview.postMessage({
-                type: 'DELETE'
-            } as MessagePayload);
-        }
+    public async clearEntries() {
+        return await this.view?.webview.postMessage({
+            type: 'DELETE'
+        } as MessagePayload);
     }
 
     // public updateReplaceRule() {
@@ -98,6 +98,9 @@ ${this.createCustomCss()}
 `;
     }
 
+    /**
+     * HACK: The way to initialize the `replaceRule` in the html is currently injecting `window` object in the html, which is not beautiful and not type-safe.
+     */
     private _getHtmlForWebview(webview: vscode.Webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
         // Use a nonce to only allow a specific script to be run.
