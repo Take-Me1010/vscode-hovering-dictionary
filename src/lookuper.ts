@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+
 import * as path from 'path';
 
 import * as entry from './lib/core/entry';
@@ -15,7 +15,7 @@ export class Lookuper {
     private entryBuilder;
     /**for debug */
     private count;
-    constructor(private context: vscode.ExtensionContext, private storage: DictionaryStorage) {
+    constructor(private extensionPath: string, private storage: DictionaryStorage) {
         // lazy
         this.loadRule();
         this.entryBuilder = entry.build();
@@ -24,8 +24,8 @@ export class Lookuper {
     }
 
     private async loadRule() {
-        const ruleFile = path.resolve(this.context.extensionPath, 'static/gen/data/rule.json');
-        rule.load(ruleFile);
+        const ruleFilePath = path.resolve(this.extensionPath, 'static/gen/data/rule.json');
+        rule.load(ruleFilePath);
     }
 
     private createEntry(word: string): string[] {

@@ -1,4 +1,6 @@
-
+/*
+    utilities about reading and writing files.
+*/
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 
