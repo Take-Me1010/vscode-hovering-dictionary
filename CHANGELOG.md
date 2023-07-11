@@ -6,6 +6,12 @@ All notable changes to the "hovering-dictionary" extension will be documented in
 
 ## Released
 
+### v0.3.0
+
+#### Added
+
+- added configs to customize the look-up results.
+
 ### v0.2.2
 
 #### fixed
