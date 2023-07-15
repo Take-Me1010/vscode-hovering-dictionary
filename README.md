@@ -6,6 +6,8 @@ Hovering-Dictionary is a VSCode extension for looking up words your mouse cursor
 
 This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse-dictionary/) (MIT License, wtetsu, 2018).
 
+日本語の説明 (For Japanese) → https://qiita.com/take_me/items/3b102e7569af8791f926
+
 ## Features
 
 **Fast looking up words with case sensitivity**
