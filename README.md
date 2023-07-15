@@ -1,7 +1,7 @@
 # VSCode-Hovering-Dictionary
 
 Hovering-Dictionary is a VSCode extension for looking up words your mouse cursor is indicating.
-[![Visual Studio Marketplace](https://vsmarketplacebadges.dev/version/Take-Me1010.hovering-dictionary.svg) ![installs](https://vsmarketplacebadges.dev/installs/Take-Me1010.hovering-dictionary.svg) ![rating](https://vsmarketplacebadges.dev/rating/Take-Me1010.hovering-dictionary.svg)](https://marketplace.visualstudio.com/items?itemName=Take-Me1010.hovering-dictionary)
+![version](https://img.shields.io/visual-studio-marketplace/v/Take-Me1010.hovering-dictionary) ![installs](https://img.shields.io/visual-studio-marketplace/d/Take-Me1010.hovering-dictionary) ![Rating](https://img.shields.io/visual-studio-marketplace/r/Take-Me1010.hovering-dictionary)
 
 This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse-dictionary/) (MIT License, wtetsu, 2018).
 
