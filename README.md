@@ -1,7 +1,8 @@
 # VSCode-Hovering-Dictionary
 
-Hovering-Dictionary is a VSCode extension for looking up words your mouse cursor is indicating.
 ![version](https://img.shields.io/visual-studio-marketplace/v/Take-Me1010.hovering-dictionary) ![installs](https://img.shields.io/visual-studio-marketplace/d/Take-Me1010.hovering-dictionary) ![Rating](https://img.shields.io/visual-studio-marketplace/r/Take-Me1010.hovering-dictionary)
+
+Hovering-Dictionary is a VSCode extension for looking up words your mouse cursor is indicating.
 
 This extension is inspired by [Mouse Dictionary](https://github.com/wtetsu/mouse-dictionary/) (MIT License, wtetsu, 2018).
 
