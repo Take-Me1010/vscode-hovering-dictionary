@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 
-import { HoveringResultFactory } from './hoverprovider';
+import { HoveringResultFactory } from './hover';
 import { Lookuper } from './lookuper';
 import { readDefaultDict, readDictFromFile } from './reader';
 import { DictionaryFileEncoding, DictionaryFileFormat } from './reader/types';
@@ -142,7 +142,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// when the extension is activated at the first time, ask the user if the default dictionary will be loaded.
 	if (!stateManager.get('defaultDictLoadedOrRejectedLoading')) {
-		const ans = await vscode.window.showInformationMessage('Thank you for installing, do you want to load default dictionary (English into Japanese)?', 'Yes', 'No')
+		const ans = await vscode.window.showInformationMessage('Thank you for installing, do you want to load default dictionary (English into Japanese)?', 'Yes', 'No');
 		if (ans === 'Yes') {
 			await vscode.commands.executeCommand('hovering-dictionary.load-default-dictionary');
 		} else {
